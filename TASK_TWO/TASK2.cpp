@@ -19,7 +19,7 @@ int main(void)
 		
 	    std::unique_ptr<void, std::function<void(void*)>> u_ptr(handle,[](void * handle)
 	    {
-		    if (handle != INVALID_HANDLE_VALUE)
+		    if (handle)
 		    {
 			    ::CloseHandle(handle);
 		    }
