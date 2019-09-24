@@ -12,7 +12,7 @@ public:
 	smart_handle& operator=(const smart_handle& other) = delete;
 	smart_handle& operator=(smart_handle&& other) noexcept = delete;
 	
-	explicit smart_handle(HANDLE handle = INVALID_HANDLE_VALUE):handle_(handle)
+	explicit smart_handle(HANDLE handle = {}):handle_(handle)
 	{
 		
 	}
@@ -39,7 +39,7 @@ public:
 	
 	~smart_handle(void) 
 	{
-		if (this->handle_ != INVALID_HANDLE_VALUE)
+		if (this->handle_)
 		{
 			::CloseHandle(this->handle_);
 		}
