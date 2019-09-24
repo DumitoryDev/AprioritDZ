@@ -17,7 +17,7 @@ public:
           m_ref_ptr(other.m_ref_ptr), //Initialization of variables is not in the order in which they are written in the class, this can be confusing, since initialization will happen in the order in which the variables are written
           m_names(other.m_names)
     {
-        (*m_ref_ptr)++; //Постфиксный инкремент, лучше префиксный использовать
+        (*m_ref_ptr)++; //better use prefix increment
     }
 
     ~MyVector()
