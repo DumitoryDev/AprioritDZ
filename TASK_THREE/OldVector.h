@@ -2,19 +2,19 @@
 #define CODEREVIEWTASK_MYVECTOR_HPP
 
 template <typename T>
-class MyVector : public std::vector<T> //Наследование от вектора не явлется необходимым. Нужно использовать агрегацию
+class MyVector : public std::vector<T> //Inheritance from a vector is not necessary. Need to use aggregation
 {
-	//Определен конструктор и конструктор копирования, но операторы - нет
+	//Copy constructor and constructor defined, but no operators
 public:
     MyVector()
     {
         m_ref_ptr = new size_t(1);
-        m_names = new std::vector<std::string>(); //Выделение памяти в конструкторе, возможны утечки. Нужно использовать умные указаетли
+        m_names = new std::vector<std::string>(); //Allocation of memory in the constructor, leaks are possible. Need to use smart pointers
     }
 
     MyVector(const MyVector& other)
         : std::vector<T>(other),
-          m_ref_ptr(other.m_ref_ptr), //Инициализия переменных не в порядке написания их в классе, это может запутать, т.к. всё равно инициализация произойдет в порядке написания переменных
+          m_ref_ptr(other.m_ref_ptr), //Initialization of variables is not in the order in which they are written in the class, this can be confusing, since initialization will happen in the order in which the variables are written
           m_names(other.m_names)
     {
         (*m_ref_ptr)++; //Постфиксный инкремент, лучше префиксный использовать
@@ -22,7 +22,7 @@ public:
 
     ~MyVector()
     {
-        if (--*m_ref_ptr == 0) // можно уменьшить код. Выражние в if все равно будет преведено к bool, значит, можно просто поставить ! (логическое не)
+        if (--*m_ref_ptr == 0) // can reduce the code. The expression in if will still be converted to bool, so you can just put it! (logical not)
         {
             delete m_ref_ptr;
             delete m_names;
@@ -33,30 +33,30 @@ public:
     {
         copy_names();
 
-        std::vector<T>::push_back(obj); //лучше использовать emplace_back, он по возможности не производит копирования. Но в данном примере особой разницы не будет, скорее всего
-        m_names->push_back(name); //тут тоже
+        std::vector<T>::push_back(obj); //it is better to use emplace_back, it does not copy if possible. But in this example, there will not be much difference
+        m_names->push_back(name); //here too
     }
 
     std::pair<const T&, const std::string&> operator[](int index) const
     {
         if (index >= std::vector<T>::size())
         {
-            throw new std::out_of_range("Index is out of range");// бросание иключение не по значению(используется new)
+            throw new std::out_of_range("Index is out of range");// inappropriate throwing (new is used)
         }
 		    	
-        return std::pair<const T&, const std::string&>(std::vector<T>::operator[](index), (*m_names)[index]); //есть make_pair. Или вообще можно "ленивую" инициализацию {} использовать 
+        return std::pair<const T&, const std::string&>(std::vector<T>::operator[](index), (*m_names)[index]); //there is make_pair. Or, in general, you can use the "lazy" initialization {}
     }
 
     const T& operator[](const std::string& name) const
     {
-        std::vector<std::string>::const_iterator iter = std::find(m_names->begin(), m_names->end(), name); //можно использовать auto, лучше использовать константные версии итераторов
+        std::vector<std::string>::const_iterator iter = std::find(m_names->begin(), m_names->end(), name); //мyou can use auto, it is better to use constant versions of iterators
     	
-        if (iter == m_names->end()) //лучше сравнивать итераторы одного типа константности
+        if (iter == m_names->end()) //it is better to compare iterators of one type of constancy
         {
-            throw new std::invalid_argument(name + " is not found in the MyVector"); // бросание иключение не по значению(используется new). Вторая проблема - оператор + у string. У этого оператора нет noexcept спецификатора, значит, этот оператор может кинуть исключение, даже если new отработает нормально, то не факт, что из-за оператора не случится утечка памяти
+            throw new std::invalid_argument(name + " is not found in the MyVector"); // throwing and turning off not by value (new is used). The second problem is the + operator of string. This operator does not have a noexcept specifier, which means that this operator can throw an exception, even if new works fine, it is not a fact that the memory leak will not occur due to the operator
         }
 						
-        return std::vector<T>::operator[](iter - m_names->begin()); //Для таких вещей есть std::distance, который безопаснее. Так же iter это константный итератор, а begin()  возвращает не константный, лучше использовать один тип.
+        return std::vector<T>::operator[](iter - m_names->begin()); //for such things, there is std :: distance, which is safer. Also, iter is a constant iterator, and begin () returns not constant, it is better to use one type.
     }
 
 private:
@@ -67,20 +67,22 @@ private:
             return;
         }
 
-    	//Нужно использовать умные указатели 
-        size_t* temp_ref_ptr = new size_t(1);//Можно использовать auto, т.к. идет дублирование имен типов
-        std::vector<std::string>* temp_names = new std::vector<std::string>(*m_names); //Опять возможная утечка. Можно использовать auto, т.к. идет дублирование имен
+    	//Use smart pointers.
+        size_t* temp_ref_ptr = new size_t(1);//use auto, because duplication of type names
+        std::vector<std::string>* temp_names = new std::vector<std::string>(*m_names); //five possible leak. Мuse auto, because duplication of type names
 
-        (*m_ref_ptr)--; //Лучше поставить префиксный декримент
+        (*m_ref_ptr)--; //better use prefix increment
         m_ref_ptr = temp_ref_ptr;
         m_names = temp_names;
     }
 
-private: //нафига два раз писать private?
+private: //what for two times to write private?
     //
     // Use copy-on-write idiom for efficiency (not a premature optimization)
-	//Вообще, лучше всегда инициализировать переменные дефолтным значением, если это возможно.
-    std::vector<std::string>* m_names; //Лучше сделать вектор пар + умный указатель
+
+    //it is better to always initialize the variables with the default value, if possible.
+
+    std::vector<std::string>* m_names; //Better use a vector pair + smart pointer
     size_t* m_ref_ptr;
 };
 
