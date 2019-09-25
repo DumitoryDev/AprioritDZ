@@ -33,8 +33,8 @@ public:
     {
         copy_names();
 
-        std::vector<T>::push_back(obj); //it is better to use emplace_back, it does not copy if possible. But in this example, there will not be much difference
-        m_names->push_back(name); //here too
+        std::vector<T>::push_back(obj); 
+        m_names->push_back(name); 
     }
 
     std::pair<const T&, const std::string&> operator[](int index) const
