@@ -119,7 +119,7 @@ private:
 
 	}
 
-	T& find(const std::string& name)
+	T& find(const std::string& name) const
 	{
 		for (size_t i{}; i < this->data_->size()/*should optimize*/; ++i)
 		{
