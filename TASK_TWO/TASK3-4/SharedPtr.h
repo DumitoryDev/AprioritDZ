@@ -37,8 +37,7 @@ public:
 		{
 			this->Clear();
 			this->Swap(other);
-			SharedPtr().Swap(other);
-
+			
 		}
 
 		return *this;

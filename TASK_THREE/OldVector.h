@@ -17,7 +17,7 @@ public:
           m_ref_ptr(other.m_ref_ptr), //Initialization of variables is not in the order in which they are written in the class, this can be confusing, since initialization will happen in the order in which the variables are written
           m_names(other.m_names)
     {
-        (*m_ref_ptr)++; //Постфиксный инкремент, лучше префиксный использовать
+        (*m_ref_ptr)++; //better use prefix increment
     }
 
     ~MyVector()
@@ -33,8 +33,8 @@ public:
     {
         copy_names();
 
-        std::vector<T>::push_back(obj); //it is better to use emplace_back, it does not copy if possible. But in this example, there will not be much difference
-        m_names->push_back(name); //here too
+        std::vector<T>::push_back(obj); 
+        m_names->push_back(name); 
     }
 
     std::pair<const T&, const std::string&> operator[](int index) const
@@ -56,7 +56,7 @@ public:
             throw new std::invalid_argument(name + " is not found in the MyVector"); // throwing and turning off not by value (new is used). The second problem is the + operator of string. This operator does not have a noexcept specifier, which means that this operator can throw an exception, even if new works fine, it is not a fact that the memory leak will not occur due to the operator
         }
 						
-        return std::vector<T>::operator[](iter - m_names->begin()); //for such things, there is std :: distance, which is safer. Also, iter is a constant iterator, and begin () returns not constant, it is better to use one type.
+        return std::vector<T>::operator[](iter - m_names->begin()); // iter is a constant iterator, and begin () returns not constant, it is better to use one type.
     }
 
 private:
