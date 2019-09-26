@@ -79,12 +79,12 @@ public:
 
 	auto cbegin(void) const noexcept
 	{
-		return this->data_->begin();
+		return this->data_->cbegin();
 	}
 
 	auto cend(void) const noexcept
 	{
-		return this->data_->end();
+		return this->data_->cend();
 	}
 
 	auto empty(void) const noexcept
