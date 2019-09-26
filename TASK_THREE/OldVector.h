@@ -56,7 +56,7 @@ public:
             throw new std::invalid_argument(name + " is not found in the MyVector"); // throwing and turning off not by value (new is used). The second problem is the + operator of string. This operator does not have a noexcept specifier, which means that this operator can throw an exception, even if new works fine, it is not a fact that the memory leak will not occur due to the operator
         }
 						
-        return std::vector<T>::operator[](iter - m_names->begin()); //for such things, there is std :: distance, which is safer. Also, iter is a constant iterator, and begin () returns not constant, it is better to use one type.
+        return std::vector<T>::operator[](iter - m_names->begin()); // iter is a constant iterator, and begin () returns not constant, it is better to use one type.
     }
 
 private:
