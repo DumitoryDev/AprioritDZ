@@ -36,6 +36,28 @@ public:
 
 
 
+class AllocatorGuard
+{
+public:
+	~AllocatorGuard(void) = delete;
+	AllocatorGuard(void) = delete;
+	AllocatorGuard(const AllocatorGuard& other) = delete;
+    AllocatorGuard(AllocatorGuard&& other) noexcept = delete;
+	AllocatorGuard& operator=(const AllocatorGuard& other) = delete;
+	AllocatorGuard& operator=(AllocatorGuard&& other) noexcept = delete;
+
+	template <typename T, template <typename Y> class Allocator >
+	static auto make( Allocator<T>  allocator, size_t count)
+	{
+		return std::unique_ptr<T[],std::function<void(T*)>>(
+			std::allocator_traits<Allocator<T>>::allocate(allocator,count),
+			[allocator,count](T * data)  mutable 
+		{
+			std::allocator_traits<Allocator<T>>::deallocate(allocator,data,count);
+		});
+	}
+};
+
 template <  typename T, template <typename Y> class Allocator = std::allocator >
 class Vector
 {
@@ -43,10 +65,11 @@ public:
 	using AllocatorType = Allocator<T>;
 	using AllocatorTraits = std::allocator_traits<AllocatorType>;
 	using VectorType = Vector<T, Allocator>;
+	using u_ptr_data = std::unique_ptr<T[],std::function<void(T *)>>;
 
 	explicit Vector(const AllocatorType& allocator = AllocatorType()) :allocator_(allocator)
 	{
-
+		
 	}
 
 	Vector(
@@ -56,12 +79,15 @@ public:
 		allocator_(allocator),
 		size_(values.size()),
 		capacity_(this->size_ + this->step_capacity_),
-		data_(AllocatorTraits::allocate(this->allocator_, this->capacity_))
+	    data_(AllocatorGuard::make(this->allocator_,this->capacity_))
+		
 	{
+				
 		std::size_t index{};
 		for (const auto& element : values)
 		{
-			AllocatorTraits::construct(this->allocator_, this->data_ + index, element);
+			new (this->data_.get() + index) T(element);
+			
 			++index;
 		}
 
@@ -76,11 +102,12 @@ public:
 		allocator_(allocator),
 		size_(size),
 		capacity_(this->size_ + this->step_capacity_),
-		data_(AllocatorTraits::allocate(this->allocator_, this->capacity_))
+		data_(AllocatorGuard::make(this->allocator_,this->capacity_))
 	{
+		   		
 		for (size_t i{}; i < this->size_; ++i)
 		{
-			AllocatorTraits::construct(this->allocator_, this->data_ + i, value);
+			new (this->data_.get() + i) T(value);
 		}
 
 	}
@@ -89,12 +116,12 @@ public:
 		allocator_(rhs.allocator_),
 		size_(rhs.size_),
 		capacity_(rhs.capacity_),
-		data_(AllocatorTraits::allocate(this->allocator_, this->capacity_))
-
+		data_(AllocatorGuard::make(this->allocator_,this->capacity_))
 	{
+				
 		for (size_t i{}; i < this->size_; ++i)
 		{
-			AllocatorTraits::construct(this->allocator_, this->data_ + i, *(rhs.data_ + i));
+			new (this->data_.get() + i) T(rhs.data_[i]);
 		}
 
 	}
@@ -136,7 +163,7 @@ public:
 	{
 
 		this->check_and_edit_free_memory();
-		AllocatorTraits::construct(this->allocator_, this->data_ + size_, element);
+		new (this->data_[this->size_]) T(element);
 		++this->size_;
 
 
@@ -146,14 +173,14 @@ public:
 	void push_back(T&& element)
 	{
 		this->check_and_edit_free_memory();
-		AllocatorTraits::construct(this->allocator_, this->data_ + size_, std::move(element));
+		new (this->data_.get() + this->size_) T(std::move(element));
 		++this->size_;
 
 	}
 
 	void pop_back(void)
 	{
-		AllocatorTraits::destroy(this->allocator_, this->data_ + this->size_ - 1);
+		(this->data_.get() + this->size_)->~T();
 		--this->size_;
 	}
 
@@ -236,17 +263,17 @@ private:
 	AllocatorType allocator_{};
 	size_t size_{};
 	size_t capacity_{};
-	T* data_{};
+	u_ptr_data data_{};
+
+	
 
 	void clear(void) noexcept
 	{
 		for (size_t i{}; i < this->size_; ++i)
 		{
-			AllocatorTraits::destroy(this->allocator_, this->data_ + i);
+			(this->data_.get() + i)->~T();
 		}
-
-		AllocatorTraits::deallocate(this->allocator_, this->data_, this->capacity_);
-
+			
 		this->size_ = 0;
 		this->capacity_ = 0;
 		this->data_ = nullptr;
@@ -267,49 +294,40 @@ private:
 
 	void move_memory(void)
 	{
-
-		T* new_data = AllocatorTraits::allocate(this->allocator_, this->capacity_);
-
+		u_ptr_data new_data(AllocatorGuard::make(this->allocator_,this->capacity_));
+					
 		for (size_t i{}; i < this->size_; ++i)
 		{
-			AllocatorTraits::construct(
-				this->allocator_, 
-				new_data + i, 
-				std::move(*(this->data_ + i)));
+			new (new_data.get() + i) T(std::move(this->data_[i]));
+			(this->data_.get() + i)->~T();
 			
-			AllocatorTraits::destroy(this->allocator_, this->data_ + i);
 		}
-
-		AllocatorTraits::deallocate(this->allocator_, this->data_, this->size_);
-
-		this->data_ = new_data;
+				
+		this->data_ = std::move(new_data);
 	}
 
 	void resize_and_move_memory(size_t new_size)
 	{
-		T* new_data = AllocatorTraits::allocate(this->allocator_, new_size);
-
+		u_ptr_data new_data(AllocatorGuard::make(this->allocator_,new_size));
 		size_t index{};
 
 		for (; index != new_size; ++index)
 		{
 			if (index < this->size_)
 			{
-				AllocatorTraits::construct(
-					this->allocator_, 
-					new_data + index, 
-					std::move(*(this->data_ + index)));
+				new (new_data.get() + index) T(std::move(this->data_[index]));
 				
 				continue;
 			}
 
-			AllocatorTraits::construct(this->allocator_, new_data + index);
+			new (new_data.get() + index) T();
+					
 
 		}
 
 
 		this->clear();
-		this->data_ = new_data;
+		this->data_ = std::move(new_data);
 
 	}
 
