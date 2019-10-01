@@ -79,12 +79,12 @@ public:
 
 	auto cbegin(void) const noexcept
 	{
-		return this->data_->begin();
+		return this->data_->cbegin();
 	}
 
 	auto cend(void) const noexcept
 	{
-		return this->data_->end();
+		return this->data_->cend();
 	}
 
 	auto empty(void) const noexcept
@@ -119,7 +119,7 @@ private:
 
 	}
 
-	T& find(const std::string& name)
+	T& find(const std::string& name) const
 	{
 		for (size_t i{}; i < this->data_->size()/*should optimize*/; ++i)
 		{
