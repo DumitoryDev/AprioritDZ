@@ -42,7 +42,7 @@ public:
 	~AllocatorGuard(void) = delete;
 	AllocatorGuard(void) = delete;
 	AllocatorGuard(const AllocatorGuard& other) = delete;
-    AllocatorGuard(AllocatorGuard&& other) noexcept = delete;
+        AllocatorGuard(AllocatorGuard&& other) noexcept = delete;
 	AllocatorGuard& operator=(const AllocatorGuard& other) = delete;
 	AllocatorGuard& operator=(AllocatorGuard&& other) noexcept = delete;
 
@@ -79,7 +79,7 @@ public:
 		allocator_(allocator),
 		size_(values.size()),
 		capacity_(this->size_ + this->step_capacity_),
-	    data_(AllocatorGuard::make(this->allocator_,this->capacity_))
+	        data_(AllocatorGuard::make(this->allocator_,this->capacity_))
 		
 	{
 				
@@ -196,12 +196,12 @@ public:
 
 	T* data() noexcept
 	{
-		return &this->data_;
+		return &this->data_[0];
 	}
 
 	[[nodiscard]] const T* data() const noexcept
 	{
-		return this->data_;
+		return this->data_.get();
 	}
 
 	[[nodiscard]] bool empty() const noexcept
