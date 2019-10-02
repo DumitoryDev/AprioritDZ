@@ -42,7 +42,7 @@ public:
 	~AllocatorGuard(void) = delete;
 	AllocatorGuard(void) = delete;
 	AllocatorGuard(const AllocatorGuard& other) = delete;
-    AllocatorGuard(AllocatorGuard&& other) noexcept = delete;
+        AllocatorGuard(AllocatorGuard&& other) noexcept = delete;
 	AllocatorGuard& operator=(const AllocatorGuard& other) = delete;
 	AllocatorGuard& operator=(AllocatorGuard&& other) noexcept = delete;
 
@@ -79,7 +79,7 @@ public:
 		allocator_(allocator),
 		size_(values.size()),
 		capacity_(this->size_ + this->step_capacity_),
-	    data_(AllocatorGuard::make(this->allocator_,this->capacity_))
+	        data_(AllocatorGuard::make(this->allocator_,this->capacity_))
 		
 	{
 				
@@ -95,7 +95,7 @@ public:
 	}
 
 	explicit Vector(
-		const size_t size,
+		const std::size_t size,
 		const T& value = T(),
 		const AllocatorType& allocator = AllocatorType())
 		:
@@ -194,17 +194,17 @@ public:
 	}
 
 
-	T* data() noexcept
+	T* data(void) noexcept
 	{
-		return &this->data_;
+		return &this->data_[0];
 	}
 
-	[[nodiscard]] const T* data() const noexcept
+	[[nodiscard]] const T* data(void) const noexcept
 	{
-		return this->data_;
+		return this->data_.get();
 	}
 
-	[[nodiscard]] bool empty() const noexcept
+	[[nodiscard]] bool empty(void) const noexcept
 	{
 		return this->size_;
 	}
@@ -216,7 +216,7 @@ public:
 		this->capacity_ = this->size_ = new_size;
 	}
 
-	void reserve(size_t new_capacity)
+	void reserve(std::size_t new_capacity)
 	{
 		if (this->size_ > new_capacity)
 		{
@@ -226,22 +226,22 @@ public:
 		this->move_memory();
 	}
 
-	T& operator [](size_t index)
+	T& operator [](std::size_t index)
 	{
 		return this->data_[index];
 	}
 
-	const T& operator [](size_t index) const
+	const T& operator [](std::size_t index) const
 	{
 		return this->data_[index];
 	}
 
-	T& at(size_t index)
+	T& at(std::size_t index)
 	{
 		return this->find(index);
 	}
 
-	[[nodiscard]] const T& at(size_t index) const
+	[[nodiscard]] const T& at(std::size_t index) const
 	{
 		return this->find(index);
 				
@@ -259,17 +259,17 @@ public:
 		
 private:
 
-	size_t step_capacity_{ 2 };
+	std::size_t step_capacity_{ 2 };
 	AllocatorType allocator_{};
-	size_t size_{};
-	size_t capacity_{};
+	std::size_t size_{};
+	std::size_t capacity_{};
 	u_ptr_data data_{};
 
 	
 
 	void clear(void) noexcept
 	{
-		for (size_t i{}; i < this->size_; ++i)
+		for (std::size_t i{}; i < this->size_; ++i)
 		{
 			(this->data_.get() + i)->~T();
 		}
@@ -296,7 +296,7 @@ private:
 	{
 		u_ptr_data new_data(AllocatorGuard::make(this->allocator_,this->capacity_));
 					
-		for (size_t i{}; i < this->size_; ++i)
+		for (std::size_t i{}; i < this->size_; ++i)
 		{
 			new (new_data.get() + i) T(std::move(this->data_[i]));
 			(this->data_.get() + i)->~T();
@@ -306,10 +306,10 @@ private:
 		this->data_ = std::move(new_data);
 	}
 
-	void resize_and_move_memory(size_t new_size)
+	void resize_and_move_memory(std::size_t new_size)
 	{
 		u_ptr_data new_data(AllocatorGuard::make(this->allocator_,new_size));
-		size_t index{};
+		std::size_t index{};
 
 		for (; index != new_size; ++index)
 		{
@@ -331,7 +331,7 @@ private:
 
 	}
 
-	[[nodiscard]] T & find(size_t index) const 
+	[[nodiscard]] T & find(std::size_t index) const 
 	{
 		if (index >= this->size_)
 		{
