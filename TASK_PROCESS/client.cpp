@@ -52,7 +52,7 @@ int wmain(int argc, wchar_t ** argv)
 		info_file.length_file = size_file;
 		
 		std::wcout<<L"Type ip: "<<std::endl;
-		std::string ip{ "192.168.1.11" };
+		std::string ip{};
 		std::getline(std::cin, ip);
 		
 		if (ip.empty())
@@ -61,7 +61,7 @@ int wmain(int argc, wchar_t ** argv)
 		}
 		
 		std::wcout<<L"Type port: "<<std::endl;
-		unsigned short port{ 33333 };
+		unsigned short port{};
 		std::cin >> port;
 		
 		boost::asio::io_service io_service;
