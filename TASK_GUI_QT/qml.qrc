@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ListImage.qml</file>
+        <file>PathImage.qml</file>
+        <file>TableImage.qml</file>
+        <file>SelectImage.qml</file>
+    </qresource>
+</RCC>
