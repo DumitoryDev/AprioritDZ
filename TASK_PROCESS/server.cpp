@@ -62,7 +62,7 @@ int wmain(void)
 			
 			std::string str(size_packet,'\0');
 			iarch >> str;
-			file.write(str.data(),str.size());
+			file.write(str.data(),str.length());
 			full_size+=str.length();
 			std::wcout<<L"\rsize packet - "<<full_size;
 					
