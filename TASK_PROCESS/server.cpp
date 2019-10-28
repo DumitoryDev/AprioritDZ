@@ -60,10 +60,10 @@ int wmain(void)
 		while (full_size != info_file.length_file)
 		{
 			
-			std::string str(size_packet,'\0');
-			iarch >> str;
-			file.write(str.data(),str.length());
-			full_size+=str.length();
+			std::string buff;
+			iarch >> buff;
+			file.write(buff.data(),buff.size());
+			full_size+=buff.length();
 			std::wcout<<L"\rsize packet - "<<full_size;
 					
 		}
