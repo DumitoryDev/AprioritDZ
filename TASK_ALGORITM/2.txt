@@ -25,4 +25,4 @@ list: вставка, удаление =  O(1), поиск O(n)
 
 
 ресурсы:
-см. https://miro.medium.com/max/4080/1*Uzrw9faXdYgg20I6NjUTBw.png
+![Image alt](https://miro.medium.com/max/4080/1*Uzrw9faXdYgg20I6NjUTBw.png)
