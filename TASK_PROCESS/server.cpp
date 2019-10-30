@@ -53,17 +53,16 @@ int wmain(void)
 		std::wcout<<L"Start receive..\n";
 		
 		size_t full_size = 0;
-		const size_t size_packet = 4096;
-		
+				
 		boost::archive::text_iarchive iarch(stream, boost::archive::no_header );
 		
 		while (full_size != info_file.length_file)
 		{
 			
-			std::string str(size_packet,'\0');
-			iarch >> str;
-			file.write(str.data(),str.size());
-			full_size+=str.length();
+			std::string buff;
+			iarch >> buff;
+			file.write(buff.data(),buff.size());
+			full_size+=buff.length();
 			std::wcout<<L"\rsize packet - "<<full_size;
 					
 		}
