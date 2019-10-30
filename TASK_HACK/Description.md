@@ -1,3 +1,3 @@
-
-![Image alt](https://github.com/DumitoryDev/AprioritDZ/TASK_HACK/master/images/1.PNG)
-<b>И так, при запуске мы видим запуск программы, получение дескриптора окна и установки DialogBox, куда будет вводится пароль<b>
+п»ї
+![Image alt](https://https://github.com/DumitoryDev/AprioritDZ/tree/master/TASK_HACK/images/1.PNG)
+<b>Р С‚Р°Рє, РїСЂРё Р·Р°РїСѓСЃРєРµ РјС‹ РІРёРґРёРј Р·Р°РїСѓСЃРє РїСЂРѕРіСЂР°РјРјС‹, РїРѕР»СѓС‡РµРЅРёРµ РґРµСЃРєСЂРёРїС‚РѕСЂР° РѕРєРЅР° Рё СѓСЃС‚Р°РЅРѕРІРєРё DialogBox, РєСѓРґР° Р±СѓРґРµС‚ РІРІРѕРґРёС‚СЃСЏ РїР°СЂРѕР»СЊ<b>
