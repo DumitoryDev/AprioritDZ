@@ -24,16 +24,6 @@ int main(void)
 
 		case 0:
 		{
-			const char* msg = "hi daddy, I'm your child.";
-			close(pipefds[0]);
-			write(pipefds[1], msg, strlen(msg) + 1);
-			close(pipefds[1]);
-			break;
-		}
-
-
-		default:
-		{
 			const int max_size = 1024;
 			char buff[max_size];
 			const char* msg = "Hello.";
@@ -55,7 +45,18 @@ int main(void)
 			}
 
 			close(pipefds[0]);
+			
+		}
 
+
+		default:
+		{
+			
+			const char* msg = "hi daddy, I'm your child.";
+			close(pipefds[0]);
+			write(pipefds[1], msg, strlen(msg) + 1);
+			close(pipefds[1]);
+			break;
 		}
 
 	}
