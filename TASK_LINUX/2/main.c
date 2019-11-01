@@ -45,6 +45,7 @@ int main(void)
 			}
 
 			close(pipefds[0]);
+			break;
 			
 		}
 
@@ -56,7 +57,7 @@ int main(void)
 			close(pipefds[0]);
 			write(pipefds[1], msg, strlen(msg) + 1);
 			close(pipefds[1]);
-			break;
+			
 		}
 
 	}
