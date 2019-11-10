@@ -99,11 +99,13 @@ public:
 
 	void clear(void) noexcept
 	{
+		//copy_names(); ?
 		this->data_->clear();
 	}
 
 	void reserve(size_t new_size)
 	{
+		//copy_names(); ?
 		this->data_->reserve(new_size);
 	}
 
