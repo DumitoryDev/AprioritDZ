@@ -8,7 +8,7 @@ std::string generate(void)
 	
 	std::random_device dev;
   	std::mt19937 gen(dev());
-	const std::uniform_int_distribution<unsigned int> uid(97, 126);
+	const std::uniform_int_distribution<unsigned int> uid(97, 126); //range of values for input (so that there are no obscure characters)
 
 	int orig_byte[] = {222,209,212}; //sum element
 	
