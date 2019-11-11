@@ -2,6 +2,16 @@
 #include <random>
 #include <numeric>
 
+constexpr int accumulate_other_number(void)
+{
+	auto res = 0;
+	for (auto i = 0; i < 6; ++i)
+	{
+		res += 16 + i;
+	}
+	return res;
+}
+
 std::string generate(void)
 {
 	std::string password(6,'0');
@@ -26,7 +36,7 @@ std::string generate(void)
 	   --index_end;
 	}
 
-	const auto sum = std::accumulate(password.cbegin(),password.cend(),0) + 111; //16 * 6 + 0...5
+	const auto sum = std::accumulate(password.cbegin(),password.cend(),0) + accumulate_other_number(); //16 * 6 + 0...5
 	
 	if (sum != 0x2f2)
 	{
