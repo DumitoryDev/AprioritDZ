@@ -10,7 +10,7 @@ std::string generate(void)
   	std::mt19937 gen(dev());
 	const std::uniform_int_distribution<unsigned int> uid(97, 126);
 
-	int orig_byte[] = {222,209,212};
+	int orig_byte[] = {222,209,212}; //sum element
 	
 	size_t index_one = 0;
 	size_t index_two = 5;
@@ -26,7 +26,7 @@ std::string generate(void)
 	   --index_two;
 	}
 
-	const auto sum = std::accumulate(password.cbegin(),password.cend(),0) + 111;
+	const auto sum = std::accumulate(password.cbegin(),password.cend(),0) + 111; //16 * 6 + 0...5
 	
 	if (sum != 0x2f2)
 	{
