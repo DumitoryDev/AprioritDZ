@@ -12,18 +12,18 @@ std::string generate(void)
 
 	int orig_byte[] = {222,209,212}; //sum element
 	
-	size_t index_one = 0;
-	size_t index_two = 5;
+	size_t index_begin = 0;
+	size_t index_end = 5;
 	
 	for (auto i : orig_byte)
 	{
 	   const char out_rand = uid(gen);
 	   const auto out_rand_two = std::abs((i - out_rand));
-	   password[index_one] = out_rand;
-	   password[index_two] = out_rand_two;
+	   password[index_begin] = out_rand;
+	   password[index_end] = out_rand_two;
 
-	   ++index_one;
-	   --index_two;
+	   ++index_begin;
+	   --index_end;
 	}
 
 	const auto sum = std::accumulate(password.cbegin(),password.cend(),0) + 111; //16 * 6 + 0...5
