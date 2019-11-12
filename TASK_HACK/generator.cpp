@@ -28,7 +28,7 @@ std::string generate(void)
 	for (auto i : orig_byte)
 	{
 	   const char out_rand = uid(gen);
-	   const auto out_rand_two = std::abs((i - out_rand));
+	   const auto out_rand_two = i - out_rand;
 	   password[index_begin] = out_rand;
 	   password[index_end] = out_rand_two;
 
